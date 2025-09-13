@@ -1,0 +1,24 @@
+{
+  "name": "adhadrive-presentation",
+  "version": "1.0.0",
+  "description": "アドハドライブ プレゼンテーション資料",
+  "main": "adhadrive_presentation.md",
+  "scripts": {
+    "build": "marp adhadrive_presentation.md -o adhadrive_presentation.html",
+    "build:pdf": "marp adhadrive_presentation.md -o adhadrive_presentation.pdf",
+    "build:pptx": "marp adhadrive_presentation.md -o adhadrive_presentation.pptx",
+    "serve": "marp adhadrive_presentation.md --server",
+    "watch": "marp adhadrive_presentation.md --watch"
+  },
+  "devDependencies": {
+    "@marp-team/marp-cli": "^3.4.0"
+  },
+  "keywords": [
+    "adhd",
+    "task-management",
+    "presentation",
+    "marp"
+  ],
+  "author": "AdhaDrive Team",
+  "license": "MIT"
+}

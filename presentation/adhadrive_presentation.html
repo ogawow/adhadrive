@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アドハドライブ - プレゼンテーション</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        
+        .presentation-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .slide {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .slide h1 {
+            font-size: 3em;
+            margin: 0 0 20px 0;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+        
+        .slide h2 {
+            font-size: 2.5em;
+            margin: 0 0 30px 0;
+            color: #667eea;
+            text-align: center;
+        }
+        
+        .slide h3 {
+            font-size: 1.8em;
+            margin: 0 0 20px 0;
+            color: #764ba2;
+        }
+        
+        .slide h4 {
+            font-size: 1.4em;
+            margin: 0 0 15px 0;
+            color: #555;
+        }
+        
+        .slide p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin: 0 0 15px 0;
+        }
+        
+        .slide ul {
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin: 0 0 20px 0;
+        }
+        
+        .slide li {
+            margin-bottom: 10px;
+        }
+        
+        .highlight {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .feature-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .feature-card h4 {
+            margin: 0 0 10px 0;
+            color: #667eea;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .label {
+            font-size: 1.1em;
+        }
+        
+        .demo-steps {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .demo-steps ol {
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+        
+        .demo-steps li {
+            margin-bottom: 10px;
+        }
+        
+        .cta {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .cta a {
+            display: inline-block;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+        
+        .cta a:hover {
+            transform: translateY(-2px);
+        }
+        
+        .navigation {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .nav-button {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 10px 15px;
+            margin: 0 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-button:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+        
+        .slide-number {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navigation">
+        <button class="nav-button" onclick="previousSlide()">← 前へ</button>
+        <button class="nav-button" onclick="nextSlide()">次へ →</button>
+    </div>
+    
+    <div class="presentation-container">
+        <!-- スライド1: タイトル -->
+        <div class="slide" id="slide-1">
+            <h1>アドハドライブ</h1>
+            <h2>ADHDの特性を活かした革新的タスク管理アプリ</h2>
+            <p style="text-align: center; font-size: 1.5em; margin-top: 40px;">
+                <span class="highlight">5秒で忘れる → 5秒で記録 → 信頼ポイントで継続</span>
+            </p>
+        </div>
+
+        <!-- スライド2: 問題提起 -->
+        <div class="slide" id="slide-2">
+            <h2>問題提起</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>ADHDの現実</h4>
+                    <ul>
+                        <li><strong>5秒で忘れる</strong>: 指示を受けた瞬間に記憶が消失</li>
+                        <li><strong>恐怖でしか覚えられない</strong>: 先輩が怖い時だけ記憶に残る</li>
+                        <li><strong>タスク管理ツールすら使えない</strong>: ツールを使うこと自体を忘れる</li>
+                        <li><strong>複数依頼者の管理が困難</strong>: 誰から何を頼まれたか混乱</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>従来ツールの限界</h4>
+                    <ul>
+                        <li>複雑すぎる操作</li>
+                        <li>継続的な入力が必要</li>
+                        <li>緊急性の視覚化不足</li>
+                        <li>社会的プレッシャーなし</li>
+                        <li>依頼者との関係性が見えない</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- スライド3: ソリューション -->
+        <div class="slide" id="slide-3">
+            <h2>ソリューション: 恐怖の代替刺激 + 信頼ポイントシステム</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>緊急モード</h4>
+                    <ul>
+                        <li><strong>5秒カウントダウン</strong>: 緊急性を演出</li>
+                        <li><strong>赤い画面 + 振動</strong>: 視覚・触覚刺激</li>
+                        <li><strong>1タップ録音</strong>: 超シンプル操作</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>信頼ポイントシステム</h4>
+                    <ul>
+                        <li><strong>動的ポイント計算</strong>: 速度・優先度・期限を考慮</li>
+                        <li><strong>依頼者別管理</strong>: 複数の依頼者を個別管理</li>
+                        <li><strong>視覚的成長</strong>: ポイントが溜まっていく様子を可視化</li>
+                        <li><strong>軌道アニメーション</strong>: ポイント獲得時の美しいアニメーション</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- スライド4: 新機能 -->
+        <div class="slide" id="slide-4">
+            <h2>新機能: 依頼者管理システム</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>依頼者一覧</h4>
+                    <ul>
+                        <li><strong>カード表示</strong>: 各依頼者を美しいカードで表示</li>
+                        <li><strong>統計情報</strong>: 信頼ポイント、完了タスク数、信頼レベル</li>
+                        <li><strong>選択機能</strong>: クリックで依頼者を選択可能</li>
+                        <li><strong>詳細表示</strong>: 各依頼者の詳細ページにアクセス</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>依頼者詳細ページ</h4>
+                    <ul>
+                        <li><strong>基本情報</strong>: 名前、部署、メール、登録日</li>
+                        <li><strong>統計ダッシュボード</strong>: 6つの統計カードで詳細情報</li>
+                        <li><strong>関連タスク</strong>: その依頼者に関連するタスク一覧</li>
+                        <li><strong>信頼レベル</strong>: 視覚的な信頼レベル表示</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- スライド5: 信頼ポイント計算 -->
+        <div class="slide" id="slide-5">
+            <h2>信頼ポイント計算ロジック</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>ポイント獲得要素</h4>
+                    <ul>
+                        <li><strong>基本ポイント</strong>: 10ポイント（完了したら必ず獲得）</li>
+                        <li><strong>優先度ボーナス</strong>: 高(20)・中(10)・低(5)ポイント</li>
+                        <li><strong>速度ボーナス</strong>: 1時間以内(30)・4時間以内(20)・1日以内(10)ポイント</li>
+                        <li><strong>期限ボーナス</strong>: 期限前に完了した場合の追加ポイント</li>
+                        <li><strong>緊急度ボーナス</strong>: 緊急度に応じた追加ポイント</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>信頼レベルシステム</h4>
+                    <ul>
+                        <li><strong>最高信頼</strong> (200ポイント以上): 赤色 + 高速点滅</li>
+                        <li><strong>高信頼</strong> (100-199ポイント): 青色 + 中速点滅</li>
+                        <li><strong>信頼中</strong> (0-99ポイント): 緑色 + 通常点滅</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- スライド6: 動的緊急度表示 -->
+        <div class="slide" id="slide-6">
+            <h2>動的緊急度表示システム</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>依頼者アイコンの動的サイズ変化</h4>
+                    <ul>
+                        <li><strong>期限超過</strong>: 最大サイズ + 赤色 + 高速点滅</li>
+                        <li><strong>6時間以内</strong>: 非常に大きい + オレンジ色</li>
+                        <li><strong>1日以内</strong>: 大きい + 黄色</li>
+                        <li><strong>3日以内</strong>: 中サイズ + 緑色</li>
+                        <li><strong>1週間以上</strong>: 小サイズ + 薄緑色</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>リアルタイム更新</h4>
+                    <ul>
+                        <li><strong>30秒間隔</strong>: 自動でアイコンサイズを更新</li>
+                        <li><strong>緊急度計算</strong>: 期限と優先度を組み合わせた計算</li>
+                        <li><strong>視覚的フィードバック</strong>: 即座に変化を確認</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- スライド7: ユーザーストーリー -->
+        <div class="slide" id="slide-7">
+            <h2>ユーザーストーリー: 複数依頼者対応</h2>
+            <div class="demo-steps">
+                <h4>会議中の小川さん</h4>
+                <ol>
+                    <li><strong>指示を受ける</strong>: 「来週までに資料まとめて」</li>
+                    <li><strong>依頼者を選択</strong>: 田中先輩を選択</li>
+                    <li><strong>緊急モード起動</strong>: 赤い画面で緊急性を演出</li>
+                    <li><strong>1タップ録音</strong>: 「来週までに資料まとめ」</li>
+                    <li><strong>信頼ポイント表示</strong>: 田中先輩の信頼ポイントを確認</li>
+                </ol>
+            </div>
+            <div class="demo-steps">
+                <h4>タスク完了時</h4>
+                <ol>
+                    <li><strong>タスク開始</strong>: 開始ボタンで時刻記録</li>
+                    <li><strong>タスク完了</strong>: 完了ボタンで時刻記録</li>
+                    <li><strong>ポイント計算</strong>: 速度・優先度・期限を考慮</li>
+                    <li><strong>ポイント追加</strong>: 依頼者の信頼ポイントに追加</li>
+                    <li><strong>軌道アニメーション</strong>: 美しいアニメーションで視覚化</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- スライド8: 技術仕様 -->
+        <div class="slide" id="slide-8">
+            <h2>技術仕様</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>フロントエンド</h4>
+                    <ul>
+                        <li><strong>Pure HTML/CSS/JavaScript</strong>: 依存関係なし</li>
+                        <li><strong>LocalStorage</strong>: ローカルデータ永続化</li>
+                        <li><strong>CSS Animations</strong>: 滑らかなアニメーション</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>音声機能</h4>
+                    <ul>
+                        <li><strong>Web MediaRecorder API</strong>: ブラウザ標準API</li>
+                        <li><strong>Vibration API</strong>: 触覚フィードバック</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>データ構造</h4>
+                    <ul>
+                        <li><strong>依頼者管理</strong>: 複数依頼者の個別管理</li>
+                        <li><strong>信頼ポイント</strong>: 動的計算と永続化</li>
+                        <li><strong>タスク管理</strong>: 依頼者との紐付け</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- スライド9: デモンストレーション -->
+        <div class="slide" id="slide-9">
+            <h2>デモンストレーション</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>依頼者管理</h4>
+                    <ol>
+                        <li><strong>依頼者追加</strong>: 新しい依頼者を登録</li>
+                        <li><strong>依頼者選択</strong>: 一覧から依頼者を選択</li>
+                        <li><strong>詳細確認</strong>: 統計情報と関連タスクを確認</li>
+                    </ol>
+                </div>
+                <div class="feature-card">
+                    <h4>信頼ポイントシステム</h4>
+                    <ol>
+                        <li><strong>タスク完了</strong>: 速度・優先度を考慮</li>
+                        <li><strong>ポイント計算</strong>: 複数要素を組み合わせ</li>
+                        <li><strong>軌道アニメーション</strong>: 美しい視覚効果</li>
+                        <li><strong>レベル更新</strong>: 信頼レベルが自動更新</li>
+                    </ol>
+                </div>
+                <div class="feature-card">
+                    <h4>動的緊急度表示</h4>
+                    <ol>
+                        <li><strong>期限設定</strong>: タスクに期限を設定</li>
+                        <li><strong>リアルタイム更新</strong>: 30秒間隔で更新</li>
+                        <li><strong>サイズ変化</strong>: 緊急度に応じてアイコンサイズ変化</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- スライド10: 市場性 -->
+        <div class="slide" id="slide-10">
+            <h2>市場性・ビジネスモデル</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="number">300万</div>
+                    <div class="label">ADHD当事者（日本国内）</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">無料</div>
+                    <div class="label">基本機能</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">プレミアム</div>
+                    <div class="label">高度な分析機能</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">エンタープライズ</div>
+                    <div class="label">企業向け機能</div>
+                </div>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>ターゲット市場</h4>
+                    <ul>
+                        <li>ADHD当事者</li>
+                        <li>発達障害支援（企業・教育機関）</li>
+                        <li>生産性向上（一般ユーザー）</li>
+                        <li>チーム管理（複数依頼者を持つ職場）</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>収益モデル</h4>
+                    <ul>
+                        <li>フリーミアム</li>
+                        <li>プレミアム（高度な分析・チーム機能）</li>
+                        <li>エンタープライズ（企業向け管理機能）</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- スライド11: 競合優位性 -->
+        <div class="slide" id="slide-11">
+            <h2>競合優位性</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>従来ツールとの違い</h4>
+                    <ul>
+                        <li><strong>ADHD特化設計</strong>: 特性に合わせたUI/UX</li>
+                        <li><strong>恐怖の代替刺激</strong>: 革新的な動機付け</li>
+                        <li><strong>超シンプル操作</strong>: 1タップで完結</li>
+                        <li><strong>依頼者別管理</strong>: 複数関係者の可視化</li>
+                        <li><strong>信頼ポイント</strong>: ゲーミフィケーション要素</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>技術的優位性</h4>
+                    <ul>
+                        <li><strong>リアルタイム処理</strong>: 即座の反応</li>
+                        <li><strong>依存関係なし</strong>: 軽量で高速</li>
+                        <li><strong>オフライン対応</strong>: ネット不要</li>
+                        <li><strong>動的UI</strong>: 緊急度に応じた変化</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- スライド12: 開発ロードマップ -->
+        <div class="slide" id="slide-12">
+            <h2>開発ロードマップ</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>Phase 1: MVP (完了)</h4>
+                    <ul>
+                        <li>緊急モード</li>
+                        <li>音声録音</li>
+                        <li>信頼システム</li>
+                        <li>依頼者管理</li>
+                        <li>動的緊急度表示</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>Phase 2: 機能拡張</h4>
+                    <ul>
+                        <li>チーム機能</li>
+                        <li>通知システム</li>
+                        <li>データ分析</li>
+                        <li>モバイルアプリ</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>Phase 3: エコシステム</h4>
+                    <ul>
+                        <li>API公開</li>
+                        <li>サードパーティ連携</li>
+                        <li>企業向け機能</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- スライド13: 社会へのインパクト -->
+        <div class="slide" id="slide-13">
+            <h2>社会へのインパクト</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>ADHD当事者への支援</h4>
+                    <ul>
+                        <li><strong>就労支援</strong>: 社会参加の促進</li>
+                        <li><strong>自信向上</strong>: 信頼ポイントで達成感</li>
+                        <li><strong>関係性の可視化</strong>: 依頼者との関係を明確化</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>組織への貢献</h4>
+                    <ul>
+                        <li><strong>生産性向上</strong>: 個人・チームの効率化</li>
+                        <li><strong>コミュニケーション改善</strong>: 依頼者との関係性向上</li>
+                        <li><strong>インクルーシブ社会</strong>: 多様性の尊重</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- スライド14: まとめ -->
+        <div class="slide" id="slide-14">
+            <h2>まとめ</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>アドハドライブの価値</h4>
+                    <ul>
+                        <li><strong>ADHDの特性を活かす</strong>: 短所を長所に変換</li>
+                        <li><strong>恐怖の代替刺激</strong>: 革新的な動機付けシステム</li>
+                        <li><strong>超シンプル操作</strong>: 誰でも使える設計</li>
+                        <li><strong>依頼者別管理</strong>: 複数関係者の可視化</li>
+                        <li><strong>信頼ポイント</strong>: ゲーミフィケーション要素</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>革新性</h4>
+                    <ul>
+                        <li><strong>動的UI</strong>: 緊急度に応じたリアルタイム変化</li>
+                        <li><strong>軌道アニメーション</strong>: 美しい視覚効果</li>
+                        <li><strong>複数依頼者対応</strong>: 現実的な職場環境に対応</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- スライド15: CTA -->
+        <div class="slide" id="slide-15">
+            <h2>ご質問・ご意見をお聞かせください</h2>
+            <p style="text-align: center; font-size: 1.5em; margin: 40px 0;">
+                <span class="highlight">アドハドライブ</span>で、ADHDの特性を活かした新しいタスク管理を始めませんか？
+            </p>
+            <div class="cta">
+                <a href="https://github.com/ogawow/adhadrive" target="_blank">GitHub Repository</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-number" id="slide-number">1 / 15</div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 15;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.style.display = 'none');
+            
+            if (n > totalSlides) currentSlide = 1;
+            if (n < 1) currentSlide = totalSlides;
+            
+            document.getElementById(`slide-${currentSlide}`).style.display = 'flex';
+            document.getElementById('slide-number').textContent = `${currentSlide} / ${totalSlides}`;
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function previousSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        // キーボードナビゲーション
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                previousSlide();
+            }
+        });
+
+        // 初期表示
+        showSlide(1);
+    </script>
+</body>
+</html>

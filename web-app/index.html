@@ -1,0 +1,2234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アドハドライブ - ADHD向け協働タスク管理アプリ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1A1A1A;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .trust-container {
+            margin-bottom: 30px;
+        }
+        
+        .trust-label {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #1A1A1A;
+        }
+        
+        .trust-bar {
+            height: 8px;
+            background-color: #E0E0E0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .trust-progress {
+            height: 8px;
+            background-color: #00C851;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .invite-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .invite-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #1A1A1A;
+        }
+        
+        .invite-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        
+        .invite-button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .invite-button:hover {
+            background-color: #218838;
+        }
+        
+        .invited-users {
+            margin-top: 10px;
+        }
+        
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .user-status {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+        
+        .status-watching {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .status-notified {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .record-button {
+            background-color: #007AFF;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 30px;
+            border: none;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+        
+        .record-button:hover {
+            background-color: #0056CC;
+        }
+        
+        .record-button:active {
+            transform: scale(0.98);
+        }
+        
+        .tasks-container {
+            margin-bottom: 20px;
+        }
+        
+        .tasks-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #1A1A1A;
+        }
+        
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .task-content {
+            flex: 1;
+        }
+        
+        .task-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .task-button {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .start-button {
+            background-color: #ffc107;
+            color: #000;
+        }
+        
+        .complete-button {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .task-status {
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 5px;
+        }
+        
+        .status-pending {
+            background-color: #e9ecef;
+            color: #6c757d;
+        }
+        
+        .status-in-progress {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .stats-container {
+            margin-bottom: 20px;
+        }
+        
+        .stats-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1A1A1A;
+        }
+        
+        .stats-subtitle {
+            font-size: 14px;
+            color: #666666;
+            margin-top: 5px;
+        }
+        
+        /* 緊急モードのスタイル */
+        .emergency-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #FF3B30;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+        
+        .warning-container {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .warning-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .warning-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+        }
+        
+        .warning-subtitle {
+            font-size: 18px;
+            color: #FFFFFF;
+        }
+        
+        .emergency-button {
+            background-color: #FFFFFF;
+            color: #FF3B30;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 40px;
+            border: none;
+            transition: transform 0.2s ease;
+        }
+        
+        .emergency-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .countdown-container {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .countdown-label {
+            font-size: 32px;
+            font-weight: bold;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 12px;
+            background-color: #FFFFFF;
+            border-radius: 6px;
+            transition: width 0.1s ease;
+        }
+        
+        .warning-list {
+            text-align: center;
+        }
+        
+        .warning-item {
+            font-size: 18px;
+            color: #FFFFFF;
+            margin-bottom: 5px;
+        }
+        
+        /* 記録中画面のスタイル */
+        .recording-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #007AFF;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+        
+        .recording-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .recording-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FFFFFF;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .recording-subtitle {
+            font-size: 18px;
+            color: #FFFFFF;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .stop-button {
+            background-color: #FFFFFF;
+            color: #007AFF;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 40px;
+            border: none;
+            transition: transform 0.2s ease;
+        }
+        
+        .stop-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .pulse {
+            animation: pulse 0.6s ease-in-out infinite alternate;
+        }
+        
+        .shake {
+            animation: shake 0.1s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 2000;
+            display: none;
+        }
+        
+        /* タスク追加モーダル */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1500;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #1A1A1A;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #1A1A1A;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #007AFF;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 16px;
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .form-textarea:focus {
+            outline: none;
+            border-color: #007AFF;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: #007AFF;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056CC;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        
+        .priority-selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .priority-option {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .priority-option.selected {
+            border-color: #007AFF;
+            background-color: #e3f2fd;
+            color: #007AFF;
+        }
+        
+        .priority-option.low {
+            border-color: #28a745;
+        }
+        
+        .priority-option.low.selected {
+            background-color: #d4edda;
+            color: #28a745;
+        }
+        
+        .priority-option.medium {
+            border-color: #ffc107;
+        }
+        
+        .priority-option.medium.selected {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .priority-option.high {
+            border-color: #dc3545;
+        }
+        
+        .priority-option.high.selected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        /* 依頼者アイコン */
+        .requester-info {
+            margin-top: 10px;
+        }
+        
+        .requester-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        
+        .requester-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        
+        .requester-name {
+            font-weight: bold;
+            color: #1A1A1A;
+        }
+        
+        .requester-status {
+            font-size: 12px;
+            color: #666;
+            margin-left: auto;
+        }
+        
+        /* タスク内の依頼者アイコン */
+        .task-requester {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .task-requester-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 8px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        
+        .task-requester-name {
+            font-size: 12px;
+            color: #666;
+            font-weight: bold;
+        }
+        
+        /* 緊急度によるアイコンサイズ変化 */
+        .requester-avatar.urgent {
+            width: 80px;
+            height: 80px;
+            border-color: #FF3B30;
+            box-shadow: 0 0 15px rgba(255, 59, 48, 0.5);
+            animation: urgentPulse 0.5s ease-in-out infinite alternate;
+        }
+        
+        .requester-avatar.very-high {
+            width: 70px;
+            height: 70px;
+            border-color: #FF6B35;
+            box-shadow: 0 0 12px rgba(255, 107, 53, 0.4);
+            animation: urgentPulse 0.8s ease-in-out infinite alternate;
+        }
+        
+        .requester-avatar.high-priority {
+            width: 60px;
+            height: 60px;
+            border-color: #dc3545;
+            box-shadow: 0 0 10px rgba(220, 53, 69, 0.3);
+        }
+        
+        .requester-avatar.medium-priority {
+            width: 50px;
+            height: 50px;
+            border-color: #ffc107;
+            box-shadow: 0 0 6px rgba(255, 193, 7, 0.2);
+        }
+        
+        .requester-avatar.low-priority {
+            width: 40px;
+            height: 40px;
+            border-color: #28a745;
+        }
+        
+        @keyframes urgentPulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+        
+        /* タスク内のアイコンサイズ変化 */
+        .task-requester-avatar.urgent {
+            width: 48px;
+            height: 48px;
+            border-color: #FF3B30;
+            box-shadow: 0 0 12px rgba(255, 59, 48, 0.4);
+            animation: urgentPulse 0.5s ease-in-out infinite alternate;
+        }
+        
+        .task-requester-avatar.very-high {
+            width: 42px;
+            height: 42px;
+            border-color: #FF6B35;
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+            animation: urgentPulse 0.8s ease-in-out infinite alternate;
+        }
+        
+        .task-requester-avatar.high-priority {
+            width: 36px;
+            height: 36px;
+            border-color: #dc3545;
+            box-shadow: 0 0 8px rgba(220, 53, 69, 0.2);
+        }
+        
+        .task-requester-avatar.medium-priority {
+            width: 30px;
+            height: 30px;
+            border-color: #ffc107;
+            box-shadow: 0 0 4px rgba(255, 193, 7, 0.1);
+        }
+        
+        .task-requester-avatar.low-priority {
+            width: 24px;
+            height: 24px;
+            border-color: #28a745;
+        }
+        
+        /* 信頼ポイントシステム */
+        .trust-points-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .trust-points {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #000;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+            animation: trustPointGlow 2s ease-in-out infinite alternate;
+            z-index: 10;
+        }
+        
+        .trust-points.high {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            box-shadow: 0 2px 12px rgba(255, 107, 107, 0.6);
+            animation: trustPointGlow 1s ease-in-out infinite alternate;
+        }
+        
+        .trust-points.medium {
+            background: linear-gradient(45deg, #4ECDC4, #44A08D);
+            box-shadow: 0 2px 10px rgba(78, 205, 196, 0.5);
+        }
+        
+        .trust-points.low {
+            background: linear-gradient(45deg, #A8E6CF, #7FCDCD);
+            box-shadow: 0 2px 6px rgba(168, 230, 207, 0.3);
+        }
+        
+        @keyframes trustPointGlow {
+            from { 
+                transform: scale(1);
+                box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+            }
+            to { 
+                transform: scale(1.1);
+                box-shadow: 0 4px 16px rgba(255, 215, 0, 0.8);
+            }
+        }
+        
+        /* 信頼ポイントの軌道アニメーション */
+        .trust-point-trail {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #FFD700;
+            border-radius: 50%;
+            animation: trustPointTrail 1s ease-out forwards;
+            z-index: 5;
+        }
+        
+        @keyframes trustPointTrail {
+            0% {
+                opacity: 1;
+                transform: scale(0.5);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.5) translateY(-20px);
+            }
+        }
+        
+        /* 信頼レベル表示 */
+        .trust-level-display {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            white-space: nowrap;
+            z-index: 15;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .trust-level-display.show {
+            opacity: 1;
+        }
+        
+        .trust-level-display.high {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+        }
+        
+        .trust-level-display.medium {
+            background: linear-gradient(45deg, #4ECDC4, #44A08D);
+        }
+        
+        .trust-level-display.low {
+            background: linear-gradient(45deg, #A8E6CF, #7FCDCD);
+            color: #333;
+        }
+
+        /* 依頼者管理システム */
+        .requester-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .requester-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            padding: 20px 0;
+        }
+
+        .requester-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .requester-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            border-color: #007AFF;
+        }
+
+        .requester-card.current {
+            border-color: #007AFF;
+            background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
+        }
+
+        .requester-card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .requester-card-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e0e0e0;
+        }
+
+        .requester-card-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .requester-card-info p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .requester-card-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #007AFF;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .requester-card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .requester-card-actions button {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .requester-card-actions .select-btn {
+            background: #007AFF;
+            color: white;
+        }
+
+        .requester-card-actions .select-btn:hover {
+            background: #0056CC;
+        }
+
+        .requester-card-actions .detail-btn {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .requester-card-actions .detail-btn:hover {
+            background: #e0e0e0;
+        }
+
+        /* 依頼者詳細ページ */
+        .page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f5f5f5;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            background: white;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 1001;
+        }
+
+        .back-button {
+            background: #f0f0f0;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .back-button:hover {
+            background: #e0e0e0;
+        }
+
+        .page-content {
+            padding: 20px;
+        }
+
+        .requester-detail-info {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .requester-detail-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .requester-detail-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #e0e0e0;
+        }
+
+        .requester-detail-info h3 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .requester-detail-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .requester-stats {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007AFF;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .requester-tasks {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* モーダルスタイルの拡張 */
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 20px;
+            color: #333;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-button:hover {
+            color: #333;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group .input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-group .input:focus {
+            outline: none;
+            border-color: #007AFF;
+            box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">アドハドライブ</h1>
+        <p class="subtitle">協働型ADHD向けタスク管理</p>
+        
+        <div class="trust-container">
+            <div class="trust-label">信頼度: <span id="trustLevel">85</span>%</div>
+            <div class="trust-bar">
+                <div class="trust-progress" id="trustProgress" style="width: 85%"></div>
+            </div>
+        </div>
+        
+        <div class="invite-section">
+            <div class="invite-title">👥 監視者を招待</div>
+            <input type="email" class="invite-input" id="inviteEmail" placeholder="メールアドレスを入力">
+            <button class="invite-button" onclick="inviteUser()">招待する</button>
+            <div class="invited-users" id="invitedUsers">
+                <!-- 招待されたユーザーが表示される -->
+            </div>
+        </div>
+        
+        <div class="invite-section">
+            <div class="invite-title">👤 依頼者管理</div>
+            <div class="requester-controls">
+                <button onclick="showAddRequesterForm()" class="invite-button">新しい依頼者を追加</button>
+            </div>
+            <div class="requester-info" id="requesterInfo">
+                <!-- 現在の依頼者情報が表示される -->
+            </div>
+        </div>
+
+        <!-- 依頼者一覧セクション -->
+        <div class="section">
+            <h3>依頼者一覧</h3>
+            <div id="requesterList" class="requester-list">
+                <!-- 依頼者一覧が表示される -->
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <button class="record-button" onclick="startEmergencyMode()" style="flex: 1; background-color: #FF3B30;">緊急モード開始</button>
+            <button class="record-button" onclick="showAddTaskModal()" style="flex: 1; background-color: #28a745;">通常タスク追加</button>
+        </div>
+        
+        <div class="tasks-container">
+            <div class="tasks-title">📋 タスク一覧</div>
+            <div id="taskList">
+                <!-- タスクが表示される -->
+            </div>
+        </div>
+        
+        <div class="stats-container">
+            <div class="stats-title">先輩からの信頼度: <span id="statsTrustLevel">85</span>%</div>
+            <div class="stats-subtitle">チームへの影響度: <span id="teamImpact">95</span>%</div>
+        </div>
+    </div>
+    
+    <!-- 緊急モード画面 -->
+    <div class="emergency-container" id="emergencyContainer">
+        <div class="warning-container" id="warningContainer">
+            <div class="warning-icon">⚠️</div>
+            <div class="warning-title">緊急タスク発生！</div>
+            <div class="warning-subtitle">先輩が話しています</div>
+        </div>
+        
+        <button class="emergency-button" onclick="startRecording()">今すぐ記録</button>
+        
+        <div class="countdown-container">
+            <div class="countdown-label">残り時間: <span id="countdown">5.0</span>秒</div>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+        
+        <div class="warning-list">
+            <div class="warning-item">• 先輩に怒られる</div>
+            <div class="warning-item">• 信頼度が下がる</div>
+            <div class="warning-item">• プロジェクト遅延</div>
+        </div>
+    </div>
+    
+    <!-- 記録中画面 -->
+    <div class="recording-container" id="recordingContainer">
+        <div class="recording-icon">🎤</div>
+        <div class="recording-title">記録中...</div>
+        <div class="recording-subtitle">音声を録音しています</div>
+        
+        <button class="stop-button" onclick="stopRecording()">停止</button>
+        
+        <div class="trust-container">
+            <div class="trust-label">信頼度: <span id="recordingTrustLevel">85</span>%</div>
+            <div class="trust-bar">
+                <div class="trust-progress" id="recordingTrustProgress" style="width: 85%"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 通知 -->
+    <div class="notification" id="notification">
+        <div id="notificationText"></div>
+    </div>
+
+
+    <!-- 依頼者追加モーダル -->
+    <div id="addRequesterModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>新しい依頼者を追加</h3>
+                <button onclick="hideAddRequesterForm()" class="close-button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="newRequesterName">依頼者名</label>
+                    <input type="text" id="newRequesterName" placeholder="依頼者名" class="input">
+                </div>
+                <div class="form-group">
+                    <label for="newRequesterAvatar">アイコンURL</label>
+                    <input type="url" id="newRequesterAvatar" placeholder="アイコンURL" class="input">
+                </div>
+                <div class="form-group">
+                    <label for="newRequesterEmail">メールアドレス</label>
+                    <input type="email" id="newRequesterEmail" placeholder="メールアドレス" class="input">
+                </div>
+                <div class="form-group">
+                    <label for="newRequesterDepartment">部署・役職</label>
+                    <input type="text" id="newRequesterDepartment" placeholder="部署・役職" class="input">
+                </div>
+                <button onclick="addRequester()" class="button">依頼者を追加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 依頼者詳細ページ -->
+    <div id="requesterDetailPage" class="page" style="display: none;">
+        <div class="page-header">
+            <button onclick="hideRequesterDetail()" class="back-button">← 戻る</button>
+            <h2 id="requesterDetailName">依頼者詳細</h2>
+        </div>
+        <div class="page-content">
+            <div id="requesterDetailInfo" class="requester-detail-info"></div>
+            <div class="requester-stats">
+                <h3>統計情報</h3>
+                <div id="requesterStats" class="stats-grid"></div>
+            </div>
+            <div class="requester-tasks">
+                <h3>関連タスク</h3>
+                <div id="requesterTasks" class="task-list"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- タスク追加モーダル -->
+    <div class="modal" id="addTaskModal">
+        <div class="modal-content">
+            <h2 class="modal-title">📝 新しいタスクを追加</h2>
+            
+            <div class="form-group">
+                <label class="form-label" for="taskTitle">タスクタイトル</label>
+                <input type="text" class="form-input" id="taskTitle" placeholder="例: 来週までに資料まとめ">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="taskDescription">詳細説明（任意）</label>
+                <textarea class="form-textarea" id="taskDescription" placeholder="タスクの詳細を入力してください..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">優先度</label>
+                <div class="priority-selector">
+                    <div class="priority-option low" data-priority="low" onclick="selectPriority('low')">
+                        <div style="font-weight: bold;">低</div>
+                        <div style="font-size: 12px;">余裕がある</div>
+                    </div>
+                    <div class="priority-option medium selected" data-priority="medium" onclick="selectPriority('medium')">
+                        <div style="font-weight: bold;">中</div>
+                        <div style="font-size: 12px;">普通</div>
+                    </div>
+                    <div class="priority-option high" data-priority="high" onclick="selectPriority('high')">
+                        <div style="font-weight: bold;">高</div>
+                        <div style="font-size: 12px;">急ぎ</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="taskDeadline">期限（任意）</label>
+                <input type="datetime-local" class="form-input" id="taskDeadline">
+            </div>
+            
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="hideAddTaskModal()">キャンセル</button>
+                <button class="btn btn-primary" onclick="addTask()">タスクを追加</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 状態管理
+        let trustLevel = 85;
+        let isEmergencyMode = false;
+        let isRecording = false;
+        let countdown = 5;
+        let countdownInterval = null;
+        let recording = null;
+        let tasks = [];
+        let invitedUsers = [];
+        let taskIdCounter = 0;
+        let selectedPriority = 'medium';
+        let requester = null;
+        let requesterTrustPoints = 0;
+        let requesterTrustLevel = 'low';
+        let requesters = [];
+        let currentRequesterId = null;
+
+        // タスクの状態
+        const TASK_STATUS = {
+            PENDING: 'pending',
+            IN_PROGRESS: 'in-progress',
+            COMPLETED: 'completed'
+        };
+
+        // ユーザーの状態
+        const USER_STATUS = {
+            WATCHING: 'watching',
+            NOTIFIED: 'notified'
+        };
+
+        // 信頼度の更新
+        function updateTrustLevel(change) {
+            trustLevel = Math.max(0, Math.min(100, trustLevel + change));
+            updateTrustDisplay();
+            localStorage.setItem('trustLevel', trustLevel.toString());
+        }
+
+        // 信頼度表示の更新
+        function updateTrustDisplay() {
+            document.getElementById('trustLevel').textContent = trustLevel;
+            document.getElementById('statsTrustLevel').textContent = trustLevel;
+            document.getElementById('recordingTrustLevel').textContent = trustLevel;
+            document.getElementById('teamImpact').textContent = Math.min(100, trustLevel + 10);
+            
+            const progressBars = document.querySelectorAll('.trust-progress');
+            progressBars.forEach(bar => {
+                bar.style.width = trustLevel + '%';
+            });
+        }
+
+        // ユーザーを招待
+        function inviteUser() {
+            const email = document.getElementById('inviteEmail').value.trim();
+            if (!email) {
+                alert('メールアドレスを入力してください');
+                return;
+            }
+            
+            if (invitedUsers.some(user => user.email === email)) {
+                alert('既に招待済みです');
+                return;
+            }
+            
+            const user = {
+                id: Date.now(),
+                email: email,
+                status: USER_STATUS.WATCHING,
+                invitedAt: new Date()
+            };
+            
+            invitedUsers.push(user);
+            document.getElementById('inviteEmail').value = '';
+            updateInvitedUsersDisplay();
+            
+            showNotification(`${email} を招待しました`);
+        }
+
+        // 招待ユーザー表示の更新
+        function updateInvitedUsersDisplay() {
+            const container = document.getElementById('invitedUsers');
+            container.innerHTML = invitedUsers.map(user => `
+                <div class="user-item">
+                    <span>${user.email}</span>
+                    <span class="user-status status-${user.status}">
+                        ${user.status === USER_STATUS.WATCHING ? '監視中' : '通知済み'}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        // タスクを開始
+        function startTask(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                task.status = TASK_STATUS.IN_PROGRESS;
+                task.startedAt = new Date();
+                updateTaskList();
+                
+                // 監視者に通知
+                notifyWatchers(`タスク「${task.content}」を開始しました`, task);
+                
+                showNotification('タスクを開始しました！監視者に通知しました');
+            }
+        }
+
+        // タスクを完了
+        function completeTask(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                task.status = TASK_STATUS.COMPLETED;
+                task.completedAt = new Date();
+                updateTaskList();
+                
+                // 信頼度上昇
+                updateTrustLevel(10);
+                
+                // 信頼ポイントを計算して追加
+                if (task.requester) {
+                    const trustPoints = calculateTrustPoints(task);
+                    addTrustPoints(trustPoints);
+                    
+                    // 依頼者一覧の信頼ポイントも更新
+                    const requesterInList = requesters.find(req => req.name === task.requester.name);
+                    if (requesterInList) {
+                        requesterInList.trustPoints += trustPoints;
+                        requesterInList.completedTasks += 1;
+                        requesterInList.totalTasks += 1;
+                        
+                        // 信頼レベルを更新
+                        if (requesterInList.trustPoints >= 200) {
+                            requesterInList.trustLevel = 'high';
+                        } else if (requesterInList.trustPoints >= 100) {
+                            requesterInList.trustLevel = 'medium';
+                        } else {
+                            requesterInList.trustLevel = 'low';
+                        }
+                    }
+                    
+                    // 信頼ポイント獲得の通知
+                    showNotification(`信頼ポイント +${trustPoints} 獲得！`);
+                }
+                
+                // 監視者に通知
+                notifyWatchers(`タスク「${task.content}」を完了しました！`, task);
+                
+                showNotification('タスク完了！信頼度が上昇しました');
+            }
+        }
+
+        // 監視者に通知
+        function notifyWatchers(message, task) {
+            invitedUsers.forEach(user => {
+                if (user.status === USER_STATUS.WATCHING) {
+                    user.status = USER_STATUS.NOTIFIED;
+                    // 実際のアプリでは、ここでメールやプッシュ通知を送信
+                    console.log(`通知: ${user.email} - ${message}`);
+                }
+            });
+            updateInvitedUsersDisplay();
+        }
+
+        // タスクリストの更新
+        function updateTaskList() {
+            const taskList = document.getElementById('taskList');
+            if (tasks.length === 0) {
+                taskList.innerHTML = '<div class="task-item">タスクがありません</div>';
+                return;
+            }
+            
+            taskList.innerHTML = tasks.map(task => {
+                const priorityIcon = task.priority === 'high' ? '🔴' : task.priority === 'medium' ? '🟡' : '🟢';
+                const deadlineText = task.deadline ? ` (期限: ${new Date(task.deadline).toLocaleDateString()})` : '';
+                const typeIcon = task.type === 'manual' ? '📝' : '🎤';
+                
+                // 依頼者アイコンの表示（動的緊急度対応）
+                const urgency = calculateUrgencyLevel(task);
+                const urgencyClass = getUrgencySizeClass(urgency);
+                const requesterHtml = task.requester ? `
+                    <div class="task-requester">
+                        <img src="${task.requester.avatar}" alt="${task.requester.name}" 
+                             class="task-requester-avatar ${urgencyClass}">
+                        <span class="task-requester-name">${task.requester.name}</span>
+                        <span style="font-size: 10px; color: #999; margin-left: 5px;">
+                            ${task.deadline ? `(${Math.round(urgency * 100)}%緊急)` : ''}
+                        </span>
+                    </div>
+                ` : '';
+                
+                return `
+                    <div class="task-item">
+                        <div class="task-content">
+                            ${requesterHtml}
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                ${typeIcon} ${priorityIcon} ${task.content}${deadlineText}
+                                ${task.deadline ? `<span style="font-size: 10px; color: #FF3B30; font-weight: bold;">
+                                    ${urgency >= 1.0 ? '🚨' : urgency >= 0.7 ? '⚠️' : ''}
+                                </span>` : ''}
+                            </div>
+                            ${task.description ? `<div style="font-size: 12px; color: #666; margin-top: 4px;">${task.description}</div>` : ''}
+                            <span class="task-status status-${task.status}">
+                                ${task.status === TASK_STATUS.PENDING ? '待機中' : 
+                                  task.status === TASK_STATUS.IN_PROGRESS ? '実行中' : '完了'}
+                            </span>
+                        </div>
+                        <div class="task-actions">
+                            ${task.status === TASK_STATUS.PENDING ? 
+                                `<button class="task-button start-button" onclick="startTask(${task.id})">開始</button>` : ''}
+                            ${task.status === TASK_STATUS.IN_PROGRESS ? 
+                                `<button class="task-button complete-button" onclick="completeTask(${task.id})">完了</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // 依頼者アイコンのサイズを更新
+            updateRequesterAvatarSizes();
+        }
+
+        // 優先度に応じたCSSクラスを取得
+        function getPriorityClass(priority) {
+            switch(priority) {
+                case 'high': return 'high-priority';
+                case 'medium': return 'medium-priority';
+                case 'low': return 'low-priority';
+                default: return 'medium-priority';
+            }
+        }
+
+        // 依頼者アイコンのサイズを更新
+        function updateRequesterAvatarSizes() {
+            const requesterAvatar = document.getElementById('requesterAvatarImg');
+            if (requesterAvatar && requester) {
+                // 最高緊急度に基づいてサイズを決定
+                const highestUrgency = getHighestUrgencyLevel();
+                const urgencyClass = getUrgencySizeClass(highestUrgency);
+                requesterAvatar.className = `requester-avatar ${urgencyClass}`;
+            }
+        }
+
+        // 最高優先度のタスクの優先度を取得
+        function getHighestTaskPriority() {
+            if (tasks.length === 0) return 'medium';
+            
+            const priorities = tasks.map(task => task.priority);
+            if (priorities.includes('high')) return 'high';
+            if (priorities.includes('medium')) return 'medium';
+            return 'low';
+        }
+
+        // 期限に基づく緊急度を計算
+        function calculateUrgencyLevel(task) {
+            if (!task.deadline) {
+                // 期限がない場合は優先度のみで判断
+                return task.priority === 'high' ? 0.8 : task.priority === 'medium' ? 0.5 : 0.2;
+            }
+            
+            const now = new Date();
+            const deadline = new Date(task.deadline);
+            const timeDiff = deadline.getTime() - now.getTime();
+            const hoursLeft = timeDiff / (1000 * 60 * 60);
+            
+            // 期限までの時間に基づく緊急度計算
+            let urgency = 1.0; // 最大緊急度
+            
+            if (hoursLeft > 24 * 7) { // 1週間以上
+                urgency = 0.3;
+            } else if (hoursLeft > 24 * 3) { // 3日以上
+                urgency = 0.5;
+            } else if (hoursLeft > 24) { // 1日以上
+                urgency = 0.7;
+            } else if (hoursLeft > 6) { // 6時間以上
+                urgency = 0.9;
+            } else if (hoursLeft > 0) { // 期限前
+                urgency = 1.0;
+            } else { // 期限超過
+                urgency = 1.2; // 最大緊急度 + 期限超過
+            }
+            
+            // 優先度による調整
+            const priorityMultiplier = task.priority === 'high' ? 1.0 : task.priority === 'medium' ? 0.8 : 0.6;
+            
+            return Math.min(1.2, urgency * priorityMultiplier);
+        }
+
+        // 最高緊急度を取得
+        function getHighestUrgencyLevel() {
+            if (tasks.length === 0) return 0.5;
+            
+            const urgencies = tasks.map(task => calculateUrgencyLevel(task));
+            return Math.max(...urgencies);
+        }
+
+        // 緊急度に基づくサイズクラスを取得
+        function getUrgencySizeClass(urgency) {
+            if (urgency >= 1.1) return 'urgent'; // 期限超過
+            if (urgency >= 0.9) return 'very-high'; // 6時間以内
+            if (urgency >= 0.7) return 'high-priority'; // 1日以内
+            if (urgency >= 0.5) return 'medium-priority'; // 3日以内
+            return 'low-priority'; // 1週間以上
+        }
+
+        // 信頼ポイントを計算
+        function calculateTrustPoints(task) {
+            if (!task.completedAt || !task.startedAt) return 0;
+            
+            const startTime = new Date(task.startedAt);
+            const completeTime = new Date(task.completedAt);
+            const duration = completeTime.getTime() - startTime.getTime();
+            const hours = duration / (1000 * 60 * 60);
+            
+            // 期限までの時間を計算
+            let deadlineBonus = 0;
+            if (task.deadline) {
+                const deadline = new Date(task.deadline);
+                const timeLeft = deadline.getTime() - completeTime.getTime();
+                const hoursLeft = timeLeft / (1000 * 60 * 60);
+                
+                if (hoursLeft > 0) {
+                    // 期限前に完了した場合のボーナス
+                    deadlineBonus = Math.min(50, hoursLeft * 2);
+                }
+            }
+            
+            // 基本ポイント（完了したら必ずもらえる）
+            let basePoints = 10;
+            
+            // 優先度ボーナス
+            const priorityBonus = task.priority === 'high' ? 20 : task.priority === 'medium' ? 10 : 5;
+            
+            // 速度ボーナス（早く完了するほど高ポイント）
+            let speedBonus = 0;
+            if (hours < 1) speedBonus = 30; // 1時間以内
+            else if (hours < 4) speedBonus = 20; // 4時間以内
+            else if (hours < 24) speedBonus = 10; // 1日以内
+            else speedBonus = 0; // 1日以上
+            
+            // 緊急度ボーナス
+            const urgency = calculateUrgencyLevel(task);
+            const urgencyBonus = Math.round(urgency * 20);
+            
+            return Math.round(basePoints + priorityBonus + speedBonus + deadlineBonus + urgencyBonus);
+        }
+
+        // 信頼レベルを更新
+        function updateTrustLevel() {
+            if (requesterTrustPoints >= 200) {
+                requesterTrustLevel = 'high';
+            } else if (requesterTrustPoints >= 100) {
+                requesterTrustLevel = 'medium';
+            } else {
+                requesterTrustLevel = 'low';
+            }
+        }
+
+        // 信頼ポイントを追加
+        function addTrustPoints(points) {
+            requesterTrustPoints += points;
+            updateTrustLevel();
+            
+            // 信頼ポイントの軌道アニメーション
+            createTrustPointTrail(points);
+            
+            // 信頼レベル表示を更新
+            updateRequesterDisplay();
+        }
+
+        // 信頼ポイントの軌道アニメーションを作成
+        function createTrustPointTrail(points) {
+            const container = document.querySelector('.requester-item');
+            if (!container) return;
+            
+            const trail = document.createElement('div');
+            trail.className = 'trust-point-trail';
+            trail.textContent = `+${points}`;
+            trail.style.position = 'absolute';
+            trail.style.top = '50%';
+            trail.style.left = '50%';
+            trail.style.transform = 'translate(-50%, -50%)';
+            trail.style.fontSize = '10px';
+            trail.style.fontWeight = 'bold';
+            trail.style.color = '#FFD700';
+            trail.style.zIndex = '20';
+            
+            container.appendChild(trail);
+            
+            setTimeout(() => {
+                if (trail.parentNode) {
+                    trail.parentNode.removeChild(trail);
+                }
+            }, 1000);
+        }
+
+        // 緊急モードの開始
+        function startEmergencyMode() {
+            isEmergencyMode = true;
+            countdown = 5;
+            document.getElementById('emergencyContainer').style.display = 'flex';
+            document.getElementById('warningContainer').classList.add('pulse', 'shake');
+            
+            // 振動（対応ブラウザのみ）
+            if (navigator.vibrate) {
+                navigator.vibrate([0, 500, 200, 500]);
+            }
+            
+            // カウントダウン開始
+            countdownInterval = setInterval(() => {
+                countdown -= 0.1;
+                document.getElementById('countdown').textContent = countdown.toFixed(1);
+                document.getElementById('progress').style.width = (countdown / 5) * 100 + '%';
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    isEmergencyMode = false;
+                    document.getElementById('emergencyContainer').style.display = 'none';
+                    alert('記録しませんでした\n信頼度が下がりました...');
+                    updateTrustLevel(-5);
+                }
+            }, 100);
+        }
+
+        // 録音開始
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                recording = new MediaRecorder(stream);
+                
+                isRecording = true;
+                isEmergencyMode = false;
+                document.getElementById('emergencyContainer').style.display = 'none';
+                document.getElementById('recordingContainer').style.display = 'flex';
+                
+                // 信頼度上昇
+                updateTrustLevel(5);
+                
+                alert('記録開始\n音声を録音しています...');
+            } catch (error) {
+                alert('エラー\n録音の開始に失敗しました');
+            }
+        }
+
+        // 録音停止
+        function stopRecording() {
+            if (recording) {
+                recording.stop();
+                recording = null;
+            }
+            
+            isRecording = false;
+            document.getElementById('recordingContainer').style.display = 'none';
+            
+            // 新しいタスクを追加
+            const newTask = {
+                id: ++taskIdCounter,
+                content: `録音タスク ${new Date().toLocaleTimeString()}`,
+                status: TASK_STATUS.PENDING,
+                createdAt: new Date()
+            };
+            tasks.unshift(newTask);
+            tasks = tasks.slice(0, 10); // 最新10件を保持
+            
+            updateTaskList();
+            
+            // 監視者に通知
+            notifyWatchers(`新しいタスク「${newTask.content}」が追加されました`, newTask);
+            
+            alert('記録完了\nよくできました！先輩に信頼されています');
+        }
+
+        // 通知を表示
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            notificationText.textContent = message;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // タスク追加モーダルを表示
+        function showAddTaskModal() {
+            document.getElementById('addTaskModal').style.display = 'flex';
+            // フォームをリセット
+            document.getElementById('taskTitle').value = '';
+            document.getElementById('taskDescription').value = '';
+            document.getElementById('taskDeadline').value = '';
+            selectPriority('medium');
+        }
+
+        // タスク追加モーダルを非表示
+        function hideAddTaskModal() {
+            document.getElementById('addTaskModal').style.display = 'none';
+        }
+
+        // 優先度を選択
+        function selectPriority(priority) {
+            selectedPriority = priority;
+            document.querySelectorAll('.priority-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.querySelector(`[data-priority="${priority}"]`).classList.add('selected');
+        }
+
+        // 依頼者を設定
+        function setRequester() {
+            const name = document.getElementById('requesterName').value.trim();
+            const avatarUrl = document.getElementById('requesterAvatar').value.trim();
+
+            if (!name) {
+                alert('依頼者名を入力してください');
+                return;
+            }
+
+            requester = {
+                name: name,
+                avatar: avatarUrl || 'https://via.placeholder.com/40x40/007AFF/FFFFFF?text=' + encodeURIComponent(name.charAt(0)),
+                setAt: new Date()
+            };
+
+            document.getElementById('requesterName').value = '';
+            document.getElementById('requesterAvatar').value = '';
+            updateRequesterDisplay();
+
+            showNotification(`${name} を依頼者に設定しました`);
+        }
+
+        // 依頼者一覧を表示（メインページに直接表示）
+        function showRequesterList() {
+            updateRequesterList();
+        }
+
+        // 依頼者追加フォームを表示
+        function showAddRequesterForm() {
+            document.getElementById('addRequesterModal').style.display = 'block';
+        }
+
+        // 依頼者追加フォームを非表示
+        function hideAddRequesterForm() {
+            document.getElementById('addRequesterModal').style.display = 'none';
+            // フォームをリセット
+            document.getElementById('newRequesterName').value = '';
+            document.getElementById('newRequesterAvatar').value = '';
+            document.getElementById('newRequesterEmail').value = '';
+            document.getElementById('newRequesterDepartment').value = '';
+        }
+
+        // 新しい依頼者を追加
+        function addRequester() {
+            const name = document.getElementById('newRequesterName').value.trim();
+            const avatar = document.getElementById('newRequesterAvatar').value.trim();
+            const email = document.getElementById('newRequesterEmail').value.trim();
+            const department = document.getElementById('newRequesterDepartment').value.trim();
+            
+            if (!name) {
+                alert('依頼者名を入力してください');
+                return;
+            }
+            
+            const newRequester = {
+                id: Date.now().toString(),
+                name: name,
+                avatar: avatar || 'https://via.placeholder.com/100x100/007AFF/FFFFFF?text=' + encodeURIComponent(name.charAt(0)),
+                email: email,
+                department: department,
+                trustPoints: 0,
+                trustLevel: 'low',
+                createdAt: new Date().toISOString(),
+                totalTasks: 0,
+                completedTasks: 0,
+                averageCompletionTime: 0
+            };
+            
+            requesters.push(newRequester);
+            saveData();
+            updateRequesterList();
+            hideAddRequesterForm();
+            
+            showNotification(`${name} を依頼者に追加しました`);
+        }
+
+        // 依頼者一覧を更新
+        function updateRequesterList() {
+            const container = document.getElementById('requesterList');
+            if (requesters.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #666; padding: 40px;">依頼者が登録されていません</div>';
+                return;
+            }
+            
+            container.innerHTML = requesters.map(req => {
+                const isCurrent = currentRequesterId === req.id;
+                const trustLevelText = req.trustLevel === 'high' ? '最高信頼' : 
+                                      req.trustLevel === 'medium' ? '高信頼' : '信頼中';
+                
+                return `
+                    <div class="requester-card ${isCurrent ? 'current' : ''}" onclick="selectRequester('${req.id}')">
+                        <div class="requester-card-header">
+                            <img src="${req.avatar}" alt="${req.name}" class="requester-card-avatar">
+                            <div class="requester-card-info">
+                                <h4>${req.name}</h4>
+                                <p>${req.department || '部署未設定'}</p>
+                            </div>
+                        </div>
+                        <div class="requester-card-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">${req.trustPoints}</div>
+                                <div class="stat-label">信頼ポイント</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">${req.completedTasks}</div>
+                                <div class="stat-label">完了タスク</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">${trustLevelText}</div>
+                                <div class="stat-label">信頼レベル</div>
+                            </div>
+                        </div>
+                        <div class="requester-card-actions">
+                            <button class="select-btn" onclick="event.stopPropagation(); selectRequester('${req.id}')">
+                                ${isCurrent ? '選択中' : '選択'}
+                            </button>
+                            <button class="detail-btn" onclick="event.stopPropagation(); showRequesterDetail('${req.id}')">
+                                詳細
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 依頼者を選択
+        function selectRequester(requesterId) {
+            const selectedRequester = requesters.find(req => req.id === requesterId);
+            if (!selectedRequester) return;
+            
+            currentRequesterId = requesterId;
+            requester = {
+                name: selectedRequester.name,
+                avatar: selectedRequester.avatar
+            };
+            requesterTrustPoints = selectedRequester.trustPoints;
+            requesterTrustLevel = selectedRequester.trustLevel;
+            
+            updateRequesterDisplay();
+            updateRequesterList();
+            saveData();
+            
+            showNotification(`${selectedRequester.name} を選択しました`);
+        }
+
+        // 依頼者詳細を表示
+        function showRequesterDetail(requesterId) {
+            const selectedRequester = requesters.find(req => req.id === requesterId);
+            if (!selectedRequester) return;
+            
+            document.getElementById('requesterDetailPage').style.display = 'block';
+            document.getElementById('requesterDetailName').textContent = selectedRequester.name;
+            
+            // 依頼者詳細情報を更新
+            updateRequesterDetailInfo(selectedRequester);
+            updateRequesterStats(selectedRequester);
+            updateRequesterTasks(selectedRequester);
+        }
+
+        // 依頼者詳細を非表示
+        function hideRequesterDetail() {
+            document.getElementById('requesterDetailPage').style.display = 'none';
+        }
+
+        // 依頼者詳細情報を更新
+        function updateRequesterDetailInfo(requester) {
+            const container = document.getElementById('requesterDetailInfo');
+            const trustLevelText = requester.trustLevel === 'high' ? '最高信頼' : 
+                                  requester.trustLevel === 'medium' ? '高信頼' : '信頼中';
+            
+            container.innerHTML = `
+                <div class="requester-detail-header">
+                    <img src="${requester.avatar}" alt="${requester.name}" class="requester-detail-avatar">
+                    <div>
+                        <h3>${requester.name}</h3>
+                        <p><strong>部署・役職:</strong> ${requester.department || '未設定'}</p>
+                        <p><strong>メール:</strong> ${requester.email || '未設定'}</p>
+                        <p><strong>信頼レベル:</strong> ${trustLevelText}</p>
+                        <p><strong>登録日:</strong> ${new Date(requester.createdAt).toLocaleDateString()}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 依頼者統計を更新
+        function updateRequesterStats(requester) {
+            const container = document.getElementById('requesterStats');
+            const relatedTasks = tasks.filter(task => task.requester && task.requester.name === requester.name);
+            const completedTasks = relatedTasks.filter(task => task.status === TASK_STATUS.COMPLETED);
+            const averageTime = completedTasks.length > 0 ? 
+                completedTasks.reduce((sum, task) => {
+                    if (task.startedAt && task.completedAt) {
+                        const duration = new Date(task.completedAt) - new Date(task.startedAt);
+                        return sum + duration;
+                    }
+                    return sum;
+                }, 0) / completedTasks.length / (1000 * 60 * 60) : 0; // 時間単位
+            
+            container.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${requester.trustPoints}</div>
+                    <div class="stat-label">信頼ポイント</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${relatedTasks.length}</div>
+                    <div class="stat-label">総タスク数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${completedTasks.length}</div>
+                    <div class="stat-label">完了タスク数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${Math.round(averageTime * 10) / 10}h</div>
+                    <div class="stat-label">平均完了時間</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${relatedTasks.length > 0 ? Math.round((completedTasks.length / relatedTasks.length) * 100) : 0}%</div>
+                    <div class="stat-label">完了率</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${requester.trustLevel === 'high' ? '🔥' : requester.trustLevel === 'medium' ? '⭐' : '🌱'}</div>
+                    <div class="stat-label">信頼レベル</div>
+                </div>
+            `;
+        }
+
+        // 依頼者関連タスクを更新
+        function updateRequesterTasks(requester) {
+            const container = document.getElementById('requesterTasks');
+            const relatedTasks = tasks.filter(task => task.requester && task.requester.name === requester.name);
+            
+            if (relatedTasks.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">関連タスクがありません</div>';
+                return;
+            }
+            
+            container.innerHTML = relatedTasks.map(task => {
+                const statusText = task.status === TASK_STATUS.COMPLETED ? '完了' : 
+                                 task.status === TASK_STATUS.IN_PROGRESS ? '実行中' : '待機中';
+                const statusClass = task.status === TASK_STATUS.COMPLETED ? 'completed' : 
+                                  task.status === TASK_STATUS.IN_PROGRESS ? 'in-progress' : 'pending';
+                
+                return `
+                    <div class="task-item ${statusClass}">
+                        <div class="task-content">
+                            <div class="task-title">${task.content}</div>
+                            <div class="task-meta">
+                                <span class="task-status">${statusText}</span>
+                                <span class="task-priority priority-${task.priority}">${task.priority === 'high' ? '高' : task.priority === 'medium' ? '中' : '低'}</span>
+                                ${task.deadline ? `<span class="task-deadline">期限: ${new Date(task.deadline).toLocaleDateString()}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 依頼者表示の更新
+        function updateRequesterDisplay() {
+            const container = document.getElementById('requesterInfo');
+            if (!requester) {
+                container.innerHTML = '<div style="text-align: center; color: #666; padding: 10px;">依頼者が設定されていません</div>';
+                return;
+            }
+
+            const trustLevelText = requesterTrustLevel === 'high' ? '最高信頼' : 
+                                  requesterTrustLevel === 'medium' ? '高信頼' : '信頼中';
+            
+            container.innerHTML = `
+                <div class="requester-item">
+                    <div class="trust-points-container">
+                        <img src="${requester.avatar}" alt="${requester.name}" class="requester-avatar" id="requesterAvatarImg">
+                        <div class="trust-points ${requesterTrustLevel}">${requesterTrustPoints}</div>
+                        <div class="trust-level-display ${requesterTrustLevel}">${trustLevelText}</div>
+                    </div>
+                    <div class="requester-name">${requester.name}</div>
+                    <div class="requester-status">依頼者</div>
+                </div>
+            `;
+        }
+
+        // タスクを追加
+        function addTask() {
+            const title = document.getElementById('taskTitle').value.trim();
+            const description = document.getElementById('taskDescription').value.trim();
+            const deadline = document.getElementById('taskDeadline').value;
+
+            if (!title) {
+                alert('タスクタイトルを入力してください');
+                return;
+            }
+
+            const newTask = {
+                id: ++taskIdCounter,
+                content: title,
+                description: description,
+                priority: selectedPriority,
+                deadline: deadline ? new Date(deadline) : null,
+                status: TASK_STATUS.PENDING,
+                createdAt: new Date(),
+                type: 'manual', // 手動追加のタスク
+                requester: requester
+            };
+
+            tasks.unshift(newTask);
+            tasks = tasks.slice(0, 20); // 最新20件を保持
+
+            updateTaskList();
+            hideAddTaskModal();
+
+            // 監視者に通知
+            notifyWatchers(`新しいタスク「${title}」が追加されました`, newTask);
+
+            showNotification('タスクを追加しました！');
+        }
+
+        // アプリ起動時の初期化
+        function init() {
+            // 保存された信頼度を読み込み
+            const savedTrustLevel = localStorage.getItem('trustLevel');
+            if (savedTrustLevel) {
+                trustLevel = parseInt(savedTrustLevel);
+            }
+            
+            // 保存されたタスクを読み込み
+            const savedTasks = localStorage.getItem('tasks');
+            if (savedTasks) {
+                tasks = JSON.parse(savedTasks);
+            }
+            
+            // 保存された招待ユーザーを読み込み
+            const savedInvitedUsers = localStorage.getItem('invitedUsers');
+            if (savedInvitedUsers) {
+                invitedUsers = JSON.parse(savedInvitedUsers);
+            }
+            
+            // 保存された依頼者を読み込み
+            const savedRequester = localStorage.getItem('requester');
+            if (savedRequester) {
+                requester = JSON.parse(savedRequester);
+            }
+            
+            // 保存された信頼ポイントを読み込み
+            const savedTrustPoints = localStorage.getItem('requesterTrustPoints');
+            if (savedTrustPoints) {
+                requesterTrustPoints = parseInt(savedTrustPoints);
+                updateTrustLevel();
+            }
+            
+            // 保存された依頼者一覧を読み込み
+            const savedRequesters = localStorage.getItem('requesters');
+            if (savedRequesters) {
+                requesters = JSON.parse(savedRequesters);
+            }
+            
+            // 保存された現在の依頼者IDを読み込み
+            const savedCurrentRequesterId = localStorage.getItem('currentRequesterId');
+            if (savedCurrentRequesterId) {
+                currentRequesterId = savedCurrentRequesterId;
+                const selectedRequester = requesters.find(req => req.id === currentRequesterId);
+                if (selectedRequester) {
+                    requester = {
+                        name: selectedRequester.name,
+                        avatar: selectedRequester.avatar
+                    };
+                    requesterTrustPoints = selectedRequester.trustPoints;
+                    requesterTrustLevel = selectedRequester.trustLevel;
+                }
+            }
+            
+            updateTrustDisplay();
+            updateTaskList();
+            updateInvitedUsersDisplay();
+            updateRequesterDisplay();
+            updateRequesterList();
+        }
+
+        // データを保存
+        function saveData() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            localStorage.setItem('invitedUsers', JSON.stringify(invitedUsers));
+            localStorage.setItem('requester', JSON.stringify(requester));
+            localStorage.setItem('requesterTrustPoints', requesterTrustPoints.toString());
+            localStorage.setItem('requesters', JSON.stringify(requesters));
+            localStorage.setItem('currentRequesterId', currentRequesterId || '');
+        }
+
+        // 定期的にデータを保存
+        setInterval(saveData, 5000);
+
+        // 定期的にアイコンサイズを更新（リアルタイム緊急度変化）
+        setInterval(() => {
+            updateTaskList();
+            updateRequesterAvatarSizes();
+        }, 30000); // 30秒ごとに更新
+
+        // モーダル外クリックで閉じる
+        document.getElementById('addTaskModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideAddTaskModal();
+            }
+        });
+
+        // ページ読み込み時に初期化
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>

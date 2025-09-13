@@ -1,18 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   StyleSheet, 
   Text, 
   View, 
   TouchableOpacity, 
   Animated, 
-  Alert,
-  Vibration
+  Alert
 } from 'react-native';
 import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TrustService } from './services/TrustService';
-import { AudioService } from './services/AudioService';
-import { EmergencyMode } from './components/EmergencyMode';
+
+// Web用のVibration代替
+const Vibration = {
+  vibrate: (pattern) => {
+    if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+      navigator.vibrate(pattern);
+    }
+  }
+};
 
 interface TrustLevel {
   level: number;
@@ -24,9 +29,17 @@ export default function App() {
   const [isEmergencyMode, setIsEmergencyMode] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordings, setRecordings] = useState<any[]>([]);
+  const [countdown, setCountdown] = useState(5);
+  const [recording, setRecording] = useState<Audio.Recording | null>(null);
+  const [tasks, setTasks] = useState<string[]>([
+    '来週までに資料まとめ',
+    '明日のプレゼンチェック',
+    '急ぎの件対応'
+  ]);
   
-  const trustService = TrustService.getInstance();
-  const audioService = AudioService.getInstance();
+  // アニメーション用のref
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const shakeAnim = useRef(new Animated.Value(0)).current;
 
   // 緊急モードの開始
   const startEmergencyMode = () => {
@@ -134,6 +147,10 @@ export default function App() {
       const uri = recording.getURI();
       setRecording(null);
       setIsRecording(false);
+      
+      // 新しいタスクを追加
+      const newTask = `録音タスク ${new Date().toLocaleTimeString()}`;
+      setTasks(prev => [newTask, ...prev.slice(0, 4)]); // 最新5件を保持
       
       Alert.alert('記録完了', 'よくできました！先輩に信頼されています');
     } catch (error) {
@@ -268,9 +285,9 @@ export default function App() {
       
       <View style={styles.tasksContainer}>
         <Text style={styles.tasksTitle}>最近のタスク:</Text>
-        <Text style={styles.taskItem}>• 来週までに資料まとめ</Text>
-        <Text style={styles.taskItem}>• 明日のプレゼンチェック</Text>
-        <Text style={styles.taskItem}>• 急ぎの件対応</Text>
+        {tasks.map((task, index) => (
+          <Text key={index} style={styles.taskItem}>• {task}</Text>
+        ))}
       </View>
       
       <View style={styles.statsContainer}>
